@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullscreen Iframe</title>
+    <style>
+        /* Reset margins and padding */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Prevents scrollbars */
+        }
+
+        /* Fullscreen iframe styling */
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none; /* Remove border */
+        }
+        #webcam-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    margin: 20px auto;
+}
+
+#video-container {
+    margin-top: 15px;
+    position: relative;
+    width: 320px;
+    height: 240px;
+    border: 1px solid #ccc;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+#image-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#image-container img {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.webcam-btn {
+    background-color: #28a745;
+}
+
+.webcam-btn:hover {
+    background-color: #218838;
+}
+
+.capture-btn {
+    background-color: #dc3545;
+}
+
+.capture-btn:hover {
+    background-color: #c82333;
+}
+
+    </style>
+</head>
+<body>
+    <iframe src="http://Sushmitha.socialmm.in" title="Sushmitha Site"></iframe>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const startWebcamButton = document.getElementById('start-webcam-button');
+    const captureButton = document.getElementById('capture-button');
+    const video = document.querySelector('video');
+    const canvas = document.querySelector('canvas');
+    const context = canvas.getContext('2d');
+    const imageContainer = document.getElementById('image-container');
+    let isWebcamActive = false;
+
+    // Start Webcam Functionality
+    startWebcamButton.addEventListener('click', () => {
+        if (!isWebcamActive) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.style.display = 'block'; // Show video when webcam starts
+                    video.play();
+                    isWebcamActive = true;
+                    startWebcamButton.textContent = 'Stop Webcam';
+                    captureButton.style.display = 'inline-block'; // Show capture button when webcam is active
+                })
+                .catch(error => {
+                    console.error('Error accessing webcam:', error);
+                });
+        } else {
+            const stream = video.srcObject;
+            if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+            video.srcObject = null;
+            video.style.display = 'none';
+            canvas.style.display = 'none';
+            startWebcamButton.textContent = 'Start Webcam';
+            captureButton.style.display = 'none'; // Hide capture button when webcam stops
+            isWebcamActive = false;
+        }
+    });
+
+    // Capture Image Functionality
+    captureButton.addEventListener('click', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL('image/png');
+        
+        // Display the captured image
+        const img = document.createElement('img');
+        img.src = imageData;
+        img.style.display = 'block';
+        imageContainer.innerHTML = ''; // Clear previous image
+        imageContainer.appendChild(img);
+    });
+});
+
+    </script>
+</body>
+</html>

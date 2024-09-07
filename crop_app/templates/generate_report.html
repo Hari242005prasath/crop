@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Report</title>
+</head>
+<body>
+    <h1>Generate PDF Report</h1>
+    <form action="{% url 'generate_report' %}" method="post">
+        {% csrf_token %}
+        <label for="user_input">Enter text:</label><br>
+        <textarea id="user_input" name="user_input" rows="10" cols="50"></textarea><br><br>
+        <button type="submit">Generate Report</button>
+    </form>    
+</body>
+</html>
